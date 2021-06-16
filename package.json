@@ -1,0 +1,13 @@
+{
+  "name": "beefy-snap",
+  "version": "1.0.0",
+  "license": "gpl-3.0",
+  "private": true,
+  "dependencies": {
+    "ethers": "^5.3.0",
+    "loglevel": "^1.7.1"
+  },
+  "scripts": {
+    "snap": "rm cache/lock; node src/snap"
+  }
+}

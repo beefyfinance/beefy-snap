@@ -1,0 +1,31 @@
+[
+	{
+		"inputs": [
+			{
+				"internalType": "address[]",
+				"name": "addr",
+				"type": "address[]"
+			},
+			{
+				"internalType": "address[]",
+				"name": "targets",
+				"type": "address[]"
+			},
+			{
+				"internalType": "string",
+				"name": "signature",
+				"type": "string"
+			}
+		],
+		"name": "aggregate",
+		"outputs": [
+			{
+				"internalType": "uint256[]",
+				"name": "",
+				"type": "uint256[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	}
+]
