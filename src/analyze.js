@@ -63,7 +63,12 @@ async function analyzeChain (id, hodlers) {
 
     } catch (err) {
       log.error(err);
-      provider = getProvider(chain.rpc);
+      
+      try {
+        provider = getProvider(chain.rpc);
+      } catch (err) {
+        log.error(err);
+      }
       
       log.debug(`sleeping for ${chain.query.sleep}ms`);
       await sleep(chain.query.sleep);
