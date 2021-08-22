@@ -99,7 +99,7 @@ const chains = {
     id: 43114,
     bifi: '0xd6070ae98b8069de6b494332d1a1a81b6179d960',
     rewards: '0x86d38c6b6313c5A3021D68D1F57CF5e69197592A',
-    maxi: '0x0000000000000000000000000000000000000000',
+    maxi: '0xCeefB07Ad37ff165A0b03DC7C808fD2E2fC77683',
     multicall: {
       address: '0x744eC1752Ab3b18AE786A051197a55112069BdDE',
       batch: 500
