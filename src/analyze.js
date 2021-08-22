@@ -3,6 +3,7 @@ const { getProvider, sleep } = require('./utils');
 const { chains } = require('./chains');
 const { abis } = require ('./abis');
 const { log } = require('./log');
+const axios = require('axios');
 
 async function analyze (hodlers) {
   log.info(`analyzing hodlers: ${hodlers.length}`);
@@ -33,6 +34,26 @@ async function analyze (hodlers) {
   return balances;
 }
 
+async function getMooBifiBoostAddresses(chain) {
+  let resp = await axios.get(chain.stakes);
+  let stakesString = resp.data;
+
+  //Retrieve only necessary array;
+  let index = stakesString.indexOf('[');
+  stakesString = stakesString.slice(index);
+  stakesString = stakesString.replace(';', '');
+  stakesString = stakesString.replace(/,*;*\s*\n*$/, "");
+
+  const govPoolABI = ''; //required to perform eval since json has object as value
+  let stakes = eval('(' + stakesString + ')');
+
+  let bifiBoostAddresses = stakes
+    .filter(stake => stake.tokenAddress.toLocaleLowerCase() === chain.maxi.toLocaleLowerCase())
+    .map(mooBoost => mooBoost.earnContractAddress);
+
+  return bifiBoostAddresses;
+}
+
 async function analyzeChain (id, hodlers) {
   log.info(`analyzing chain: ${id}`);
   const chain = chains[id];
@@ -41,7 +62,8 @@ async function analyzeChain (id, hodlers) {
   let provider = getProvider(chain.rpc);
   const multicall = new Contract(chain.multicall.address, abis.multicall, provider);
   const batch_size = chain.multicall.batch;
-  const targets = [chain.bifi, chain.rewards, chain.maxi];
+  const boosts = await getMooBifiBoostAddresses(chain);  
+  const targets = [chain.bifi, chain.rewards, chain.maxi, ...boosts];
 
   let maxi_pps = 1;
   if (chain.maxi != '0x0000000000000000000000000000000000000000') {
@@ -85,8 +107,14 @@ async function analyzeChain (id, hodlers) {
         bifi: Number(results[j * targets.length + 0]) / 1e18,
         rewards: Number(results[j * targets.length + 1]) / 1e18,
         maxi: Number(results[j * targets.length + 2]) / 1e18 * maxi_pps,
+        boosts: 0
       }
-      bal.total = bal.bifi + bal.rewards + bal.maxi;
+
+      for (let k = 3; k < targets.length; k++) {
+        bal.boosts += Number(results[j * targets.length + k]) / 1e18 * maxi_pps;
+      }
+
+      bal.total = bal.bifi + bal.rewards + bal.maxi + bal.boosts;
       
       balances[hodlers[idx]] = bal;
     }
