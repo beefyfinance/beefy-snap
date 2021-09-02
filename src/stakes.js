@@ -103,7 +103,7 @@ const getVaultData = async (vault, chain) => {
             await sleep(2500);
             provider = getProvider(chain.rpc);
             log.error('retrying vault calls ' + chain.id);
-            debug.error(err.message)
+            log.error(err.message)
         }
         retries--;
     }
