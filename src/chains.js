@@ -8,7 +8,7 @@ const chains = {
     vaults: 'https://raw.githubusercontent.com/beefyfinance/beefy-app/prod/src/features/configure/vault/bsc_pools.js',
     multicall: {
       address: '0x8B326CA2A9c15b1730dBF21d396eB3a282EAC04B',
-      batch: 250
+      batch: 350
     },
     rpc: [
       'https://bsc-dataseed.binance.org/',
@@ -42,7 +42,7 @@ const chains = {
     vaults: 'https://raw.githubusercontent.com/beefyfinance/beefy-app/prod/src/features/configure/vault/heco_pools.js',
     multicall: {
       address: '0x92BC92304Fe5f85D6451e890EBd46606Eaf354eb',
-      batch: 500
+      batch: 350
     },
     rpc: ['https://http-mainnet.hecochain.com'],
     query: {
@@ -62,14 +62,14 @@ const chains = {
     vaults: 'https://raw.githubusercontent.com/beefyfinance/beefy-app/prod/src/features/configure/vault/polygon_pools.js',
     multicall: {
       address: '0x9FE5D998c39B5B6d6Fc4a5ad1E54Af40974C0F02',
-      batch: 500
+      batch: 350
     },
     rpc: [
-      'https://polygon-rpc.com',
-      'https://rpc-mainnet.matic.network',
-      'https://rpc-mainnet.maticvigil.com',
-      'https://rpc-mainnet.matic.quiknode.pro',
-      'https://matic-mainnet.chainstacklabs.com',
+      'https://polygon-rpc.com'
+      // 'https://rpc-mainnet.matic.network',
+      // 'https://rpc-mainnet.maticvigil.com',
+      // 'https://rpc-mainnet.matic.quiknode.pro',
+      // 'https://matic-mainnet.chainstacklabs.com',
     ],
     query: {
       limit: 1000,
@@ -88,7 +88,7 @@ const chains = {
     vaults: 'https://raw.githubusercontent.com/beefyfinance/beefy-app/prod/src/features/configure/vault/fantom_pools.js',
     multicall: {
       address: '0x81eA78BddEfFe1e1A150A3cac2272D6d9511d26e',
-      batch: 500
+      batch: 350
     },
     rpc: [
       'https://rpc.ftm.tools',
@@ -111,7 +111,7 @@ const chains = {
     vaults: 'https://raw.githubusercontent.com/beefyfinance/beefy-app/prod/src/features/configure/vault/avalanche_pools.js',
     multicall: {
       address: '0x744eC1752Ab3b18AE786A051197a55112069BdDE',
-      batch: 500
+      batch: 350
     },
     rpc: ['https://api.avax.network/ext/bc/C/rpc'],
     query: {
