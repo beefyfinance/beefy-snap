@@ -65,11 +65,11 @@ const chains = {
       batch: 350
     },
     rpc: [
-      'https://polygon-rpc.com'
-      // 'https://rpc-mainnet.matic.network',
-      // 'https://rpc-mainnet.maticvigil.com',
-      // 'https://rpc-mainnet.matic.quiknode.pro',
-      // 'https://matic-mainnet.chainstacklabs.com',
+      'https://polygon-rpc.com',
+      'https://rpc-mainnet.matic.network',
+      'https://rpc-mainnet.maticvigil.com',
+      'https://rpc-mainnet.matic.quiknode.pro',
+      'https://matic-mainnet.chainstacklabs.com',
     ],
     query: {
       limit: 1000,
