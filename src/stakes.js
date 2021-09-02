@@ -3,6 +3,7 @@ const {log} = require('./log');
 const { getProvider, sleep } = require('./utils');
 const { Contract } = require('ethers');
 const { abis } = require ('./abis');
+const { debug } = require('loglevel');
 
 
 const getMooBifiBoostAddresses = async (chain) => {
@@ -31,7 +32,6 @@ const parseFileArray = (boostFileString) => {
     try {
         boostArray = eval('(' + boosts + ')');
     } catch (err) {
-        console.log(boostFileString)
         log.debug('Failed to parse boost file string');
         log.error(err);
         boostArray = [];
@@ -103,7 +103,7 @@ const getVaultData = async (vault, chain) => {
             await sleep(2500);
             provider = getProvider(chain.rpc);
             log.error('retrying vault calls ' + chain.id);
-            console.log(err.message)
+            debug.error(err.message)
         }
         retries--;
     }
