@@ -3,7 +3,7 @@ const { getProvider, sleep } = require('./utils');
 const { chains } = require('./chains');
 const { abis } = require ('./abis');
 const { log } = require('./log');
-const axios = require('axios');
+const { getMooBifiBoostAddresses } = require('./stakes');
 
 async function analyze (hodlers) {
   log.info(`analyzing hodlers: ${hodlers.length}`);
@@ -34,26 +34,6 @@ async function analyze (hodlers) {
   return balances;
 }
 
-async function getMooBifiBoostAddresses(chain) {
-  let resp = await axios.get(chain.stakes);
-  let stakesString = resp.data;
-
-  //Retrieve only necessary array;
-  let index = stakesString.indexOf('[');
-  stakesString = stakesString.slice(index);
-  stakesString = stakesString.replace(';', '');
-  stakesString = stakesString.replace(/,*;*\s*\n*$/, "");
-
-  const govPoolABI = ''; //required to perform eval since json has object as value
-  let stakes = eval('(' + stakesString + ')');
-
-  let bifiBoostAddresses = stakes
-    .filter(stake => stake.tokenAddress.toLocaleLowerCase() === chain.maxi.toLocaleLowerCase())
-    .map(mooBoost => mooBoost.earnContractAddress);
-
-  return bifiBoostAddresses;
-}
-
 async function analyzeChain (id, hodlers) {
   log.info(`analyzing chain: ${id}`);
   const chain = chains[id];
@@ -62,7 +42,7 @@ async function analyzeChain (id, hodlers) {
   let provider = getProvider(chain.rpc);
   const multicall = new Contract(chain.multicall.address, abis.multicall, provider);
   const batch_size = chain.multicall.batch;
-  const boosts = await getMooBifiBoostAddresses(chain);  
+  const boosts = await getMooBifiBoostAddresses(chain);
   const targets = [chain.bifi, chain.rewards, chain.maxi, ...boosts];
 
   let maxi_pps = 1;
