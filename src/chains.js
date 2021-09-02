@@ -8,7 +8,7 @@ const chains = {
     vaults: 'https://raw.githubusercontent.com/beefyfinance/beefy-app/prod/src/features/configure/vault/bsc_pools.js',
     multicall: {
       address: '0x8B326CA2A9c15b1730dBF21d396eB3a282EAC04B',
-      batch: 500
+      batch: 250
     },
     rpc: [
       'https://bsc-dataseed.binance.org/',
@@ -95,7 +95,7 @@ const chains = {
       'https://rpcapi.fantom.network'
     ],
     query: {
-      limit: 1000,
+      limit: 5000,
       interval: 100,
       sleep: 10000,
       start: 6903757,
