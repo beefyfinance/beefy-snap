@@ -44,7 +44,6 @@ async function analyzeChain (id, hodlers) {
   const moonpotMulticall = chain.moonpot 
     ? new Contract(chain.moonpot.multicall, abis.moonpot, provider) : null;
 
-  await sleep(2500);
   const batch_size = chain.multicall.batch;
   const boosts = await getMooBifiBoostAddresses(chain);
   const lps = await getLpBifiData(chain);
