@@ -4,6 +4,10 @@ const chains = {
     bifi: '0xca3f508b8e4dd382ee878a314789373d80a5190a',
     rewards: '0x453D4Ba9a2D594314DF88564248497F7D74d6b2C',
     maxi: '0xf7069e41C57EcC5F122093811d8c75bdB5f7c14e',
+    moonpot: {
+      gate: '0xb4651e8A3E70d0BE1B1D1241C3679F1572c23e48',
+      multicall: '0x61a8820940e61B5543D5A417dd9581c88Fe0521D'
+    },
     stakes: 'https://raw.githubusercontent.com/beefyfinance/beefy-app/prod/src/features/configure/stake/bsc_stake.js',
     vaults: 'https://raw.githubusercontent.com/beefyfinance/beefy-app/prod/src/features/configure/vault/bsc_pools.js',
     multicall: {
@@ -65,11 +69,7 @@ const chains = {
       batch: 350
     },
     rpc: [
-      'https://polygon-rpc.com',
-      'https://rpc-mainnet.matic.network',
-      'https://rpc-mainnet.maticvigil.com',
-      'https://rpc-mainnet.matic.quiknode.pro',
-      'https://matic-mainnet.chainstacklabs.com',
+      'https://polygon-rpc.com'
     ],
     query: {
       limit: 1000,
