@@ -41,6 +41,9 @@ async function analyzeChain (id, hodlers) {
   log.debug('preparing aux vars');
   let provider = getProvider(chain.rpc);
   const multicall = new Contract(chain.multicall.address, abis.multicall, provider);
+  const moonpotMulticall = chain.moonpot 
+    ? new Contract(chain.moonpot.multicall, abis.moonpot, provider) : null;
+
   const batch_size = chain.multicall.batch;
   const boosts = await getMooBifiBoostAddresses(chain);
   const lps = await getLpBifiData(chain);
@@ -62,9 +65,14 @@ async function analyzeChain (id, hodlers) {
     const addresses = hodlers.slice(i, i + batch_size);
   
     let results = [];
+    let moonpotResults = [];
     try {
       log.debug(`${id} batch: [${i}-${i + batch_size} / ${hodlers.length}]`);
       results = await multicall.aggregate(addresses, targets, "balanceOf(address)");
+
+      if (chain.moonpot) {
+        moonpotResults = await moonpotMulticall.getUserMoonpotBalance(addresses, chain.moonpot.gate);
+      }
 
     } catch (err) {
       log.error(err);
@@ -94,6 +102,10 @@ async function analyzeChain (id, hodlers) {
         lps: 0
       }
 
+      if (chain.moonpot) {
+        bal['pot'] = Number(moonpotResults[j])/1e18;
+      }
+
       for (let k = 0; k < boosts.length; k++) {
         bal.boosts += Number(results[j * targets.length + k + 3]) / 1e18 * maxi_pps;
       }
@@ -103,7 +115,7 @@ async function analyzeChain (id, hodlers) {
         bal.lps += Number(results[j * targets.length + k + 3 + boosts.length]) * lp.bifiRatio * lp.ppfs;
       }
 
-      bal.total = bal.bifi + bal.rewards + bal.maxi + bal.boosts + bal.lps;
+      bal.total = bal.bifi + bal.rewards + bal.maxi + bal.boosts + bal.lps + (bal.pot ?? 0);
       
       balances[hodlers[idx]] = bal;
     }
