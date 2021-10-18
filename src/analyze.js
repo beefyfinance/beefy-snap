@@ -3,7 +3,7 @@ const { getProvider, sleep } = require('./utils');
 const { chains } = require('./chains');
 const { abis } = require ('./abis');
 const { log } = require('./log');
-const { getMooBifiBoostAddresses, getLpBifiData } = require('./stakes');
+const { getMooBifiBoostAddresses, getLpBifiData, getLpBifiBoostedData } = require('./stakes');
 
 async function analyze (hodlers) {
   log.info(`analyzing hodlers: ${hodlers.length}`);
@@ -46,10 +46,13 @@ async function analyzeChain (id, hodlers) {
 
   const batch_size = chain.multicall.batch;
   const boosts = await getMooBifiBoostAddresses(chain);
+  const lpBoosts = await getLpBifiBoostedData(chain);
+
   const lps = await getLpBifiData(chain);
-  
+
+  const lpBoostAddresses = lpBoosts.map(lpb => lpb.address);
   const lpAddresses = lps.map(lp => lp.address);
-  const targets = [chain.bifi, chain.rewards, chain.maxi, ...boosts, ...lpAddresses];
+  const targets = [chain.bifi, chain.rewards, chain.maxi, ...boosts, ...lpBoostAddresses, ...lpAddresses];
 
   let maxi_pps = 1;
   if (chain.maxi != '0x0000000000000000000000000000000000000000') {
@@ -109,10 +112,15 @@ async function analyzeChain (id, hodlers) {
       for (let k = 0; k < boosts.length; k++) {
         bal.boosts += Number(results[j * targets.length + k + 3]) / 1e18 * maxi_pps;
       }
+      
+      for (k = 0; k < lpBoosts.length; k++) {
+        const lpBoost = lpBoosts[k];
+        bal.boosts += Number(results[j * targets.length + k + 3 + boosts.length]) * lpBoost.bifiRatio * lpBoost.ppfs;
+      }
 
       for (let k = 0; k < lps.length; k++ ) {
         const lp = lps[k];
-        bal.lps += Number(results[j * targets.length + k + 3 + boosts.length]) * lp.bifiRatio * lp.ppfs;
+        bal.lps += Number(results[j * targets.length + k + 3 + boosts.length + lpBoosts.length]) * lp.bifiRatio * lp.ppfs;
       }
 
       bal.total = bal.bifi + bal.rewards + bal.maxi + bal.boosts + bal.lps + (bal.pot ?? 0);
@@ -126,4 +134,4 @@ async function analyzeChain (id, hodlers) {
   return balances;
 }
 
-module.exports = { analyze }
+module.exports = { analyze, analyzeChain }
