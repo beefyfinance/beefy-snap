@@ -4,7 +4,11 @@ const { log } = require('./log');
 const getProvider = (rpcs) => { 
   log.debug('randomizing provider');
   const idx = Math.floor(Math.random() * rpcs.length);
-  const provider = new ethers.providers.JsonRpcProvider(rpcs[idx]);
+  const provider = new ethers.providers.JsonRpcProvider(
+    {
+      url: rpcs[idx],
+      timeout: 10000
+    });
   log.debug(`provider: ${rpcs[idx]}`);
   return provider;
 }
