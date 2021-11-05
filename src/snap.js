@@ -11,7 +11,9 @@ function reduceBalance(balance) {
       balance.heco.total + 
       balance.polygon.total + 
       balance.fantom.total + 
-      balance.avax.total; 
+      balance.avax.total +
+      balance.harmony.total +
+      balance.arbitrum.total;
 
   } catch (err) {
     log.warn(err);
