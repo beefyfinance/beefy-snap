@@ -4,16 +4,15 @@ const { log } = require('./log');
 const { track } = require('./track');
 const { analyze } = require('./analyze');
 const { LOCK_FILE, META_FILE, HODL_FILE, SNAP_FILE, BIFI_FILE } = require('./constants');
+const { chains } = require('./chains');
 
 function reduceBalance(balance) {
   try {
-    return balance.bsc.total +
-      balance.heco.total + 
-      balance.polygon.total + 
-      balance.fantom.total + 
-      balance.avax.total +
-      balance.harmony.total +
-      balance.arbitrum.total;
+    let totalBalance = 0;
+    for (const chain of Object.keys(chains)) {
+      totalBalance += balance[chain].total;
+    }
+    return totalBalance;
 
   } catch (err) {
     log.warn(err);
