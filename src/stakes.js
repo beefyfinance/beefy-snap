@@ -30,10 +30,9 @@ const parseFileArray = (boostFileString) => {
   let boosts = boostFileString.slice(index);
   boosts = boosts.replace(";", "");
   boosts = boosts.replace(/,*;*\s*\n*$/, "");
+  boosts = boosts.replace(/partners: \[[a-zA-Z]+\]/gm, "partners: 'fill'");
 
   const govPoolABI = "";
-  const moonpot = ""; //required to perform eval since json has object key
-  const beefy = "";
 
   let boostArray = [];
 
