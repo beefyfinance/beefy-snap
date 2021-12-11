@@ -5,6 +5,7 @@ const { track } = require('./track');
 const { analyze } = require('./analyze');
 const { LOCK_FILE, META_FILE, HODL_FILE, SNAP_FILE, BIFI_FILE } = require('./constants');
 const { chains } = require('./chains');
+const { loadExcludedAddresses, isAddressExcluded } = require('./exclude');
 
 function reduceBalance(balance) {
   try {
@@ -29,12 +30,18 @@ async function main () {
       process.exit(-1);
     }
 
+    log.debug('loading blacklist');
+    await loadExcludedAddresses();
+    log.debug('blacklist loaded');
+
     log.debug('locking mutex');
     writeFileSync(LOCK_FILE, Date.now().toString());
     log.debug('mutex locked');
 
     let metadata = { hodlers: 0 };
     let hodlers = [];
+
+    loadExcludedAddresses();
   
     if (existsSync(META_FILE)) {
       log.debug('metadata found');
@@ -70,7 +77,7 @@ async function main () {
     const reduced = {};
     for(const [addr, balance] of Object.entries(balances)) {
       let total = reduceBalance(balance);
-      if(total <= 0 || total === NaN) { continue; }
+      if(total <= 0 || total === NaN || isAddressExcluded(addr)) { continue; }
       reduced[addr] = total.toString();
     }
 
