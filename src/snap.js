@@ -41,8 +41,6 @@ async function main () {
     let metadata = { hodlers: 0 };
     let hodlers = [];
 
-    loadExcludedAddresses();
-  
     if (existsSync(META_FILE)) {
       log.debug('metadata found');
 
