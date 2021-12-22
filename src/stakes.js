@@ -5,25 +5,6 @@ const { Contract } = require("ethers");
 const { abis } = require("./abis");
 const { debug } = require("loglevel");
 
-const getMooBifiBoostAddresses = async (chain) => {
-  try {
-    let resp = await axios.get(chain.stakes);
-
-    let boosts = parseFileArray(resp.data);
-
-    //keep boosts that take moobifi as input
-    return boosts
-      .filter(
-        (boost) =>
-          boost.tokenAddress.toLocaleLowerCase() ===
-          chain.maxi.toLocaleLowerCase()
-      )
-      .map((boost) => boost.earnContractAddress);
-  } catch (err) {
-    return [];
-  }
-};
-
 const parseFileArray = (boostFileString) => {
   let index = boostFileString.indexOf("[");
 
@@ -46,6 +27,27 @@ const parseFileArray = (boostFileString) => {
 
   return boostArray;
 };
+
+
+const getMooBifiBoostAddresses = async (chain) => {
+  try {
+    let resp = await axios.get(chain.stakes);
+
+    let boosts = parseFileArray(resp.data);
+
+    //keep boosts that take moobifi as input
+    return boosts
+      .filter(
+        (boost) =>
+          boost.tokenAddress.toLocaleLowerCase() ===
+          chain.maxi.toLocaleLowerCase()
+      )
+      .map((boost) => boost.earnContractAddress);
+  } catch (err) {
+    return [];
+  }
+};
+
 
 const getLpBifiData = async (chain) => {
   try {
@@ -127,7 +129,7 @@ const getLpBifiBoostedData = async (chain) => {
 
 /*
     Gets all the relevant information to find out how much BIFI is staked per mooLPtoken
-    User balance is fetched later and multiplied times bifiRatio * ppfs to get it's bifi balance
+    User balance is fetched later and multiplied times bifiRatio * ppfs to get the bifi balance
 */
 const getVaultData = async (vault, chain) => {
   let retries = 5;
@@ -180,8 +182,42 @@ const getVaultData = async (vault, chain) => {
   };
 };
 
+const getVaultStrategy = async (vault, chain) => {
+  let retries = 5;
+
+  let provider = getProvider(chain.rpc);
+  while (retries > 0) {
+    try {
+
+      const vaultContract = new Contract(vault, abis.vault, provider);
+
+      let strategy = await vaultContract.strategy();
+
+      return strategy;
+    } catch (err) {
+      await sleep(2500);
+      provider = getProvider(chain.rpc);
+      log.error("retrying strategy calls " + chain.id);
+      log.error(err.message);
+    }
+    retries--;
+  }
+
+  return "";
+}
+
+const getStrategyAddressForVaults = async (vaults, chain) => {
+  let strats = [];
+  for (const vault of vaults) {
+    let strat = await getVaultStrategy(vault, chain);
+    strats.push(strat.toLocaleLowerCase());
+  }
+  return strats;
+}
+
 module.exports = {
   getMooBifiBoostAddresses,
   getLpBifiBoostedData,
-  getLpBifiData
+  getLpBifiData,
+  getStrategyAddressForVaults,
 };
